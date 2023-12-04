@@ -30,13 +30,14 @@ df = df.drop(columns=['rk2', 'rk3', 'pk_table2', 'pk_table3'], axis=1)
 
 print("df is ok")
 
+
 # 连接 MySQL 数据库
 conn = pymysql.connect(
 
     host='192.168.123.100',  # 主机名
     port=3306,  # 端口号，MySQL默认为3306
     user='zy',  # 用户名
-    password='',  # 密码
+    password='yqq000702',  # 密码
     database='alidb',  # 数据库名称
 )
 
@@ -63,9 +64,9 @@ for i in range(0, df.shape[0]):
     cursor.execute(rk)
     rk = cursor.fetchall()
 
-    pk_rk_em = bc.encode([pk[0][0], pk[0][1] + '|||' + rk[0][0], rk[0][1]])
+    pk_rk_em = bc.encode([pk[0][0] + pk[0][1] + '|||' + rk[0][0] + rk[0][1]])
 
-    train.append(np.array(pk_rk_em[1]))
+    train.append(np.array(pk_rk_em[0]))
 
     train_label.append(1)
 
@@ -81,28 +82,20 @@ att = cursor.fetchall()
 att_num = len(att)
 print("att num is : {}.".format(att_num))
 test_att_num = int(att_num/500)
-# temp = bc.encode(["a"])
-# att_em = np.empty((test_att_num, temp.shape[1]))
 result = []
 
 # self desc
 for i in range(0, 400):
     temp = random.randint(0, att_num)
     if att[temp][1]:
-        em = bc.encode([att[temp][0], att[temp][1] + ' ||| ' + att[temp][0], att[temp][1]])[1]
+        em = bc.encode([att[temp][0] + att[temp][1] + ' ||| ' + att[temp][0] + att[temp][1]])[0]
     else:
-        em = bc.encode([att[temp][0] + ' ||| ' + att[temp][0]])[1]
+        em = bc.encode([att[temp][0] + ' ||| ' + att[temp][0]])[0]
     train.append(em)
     train_label.append(1)
 
 
 print("self is ok")
-# for i in range(0, 400):
-#     temp = random.randint(0, att_num)
-#     em = bc.encode([att[temp][0], att[temp][1] + ' ||| ' + att[temp][0], att[temp][1]])[1]
-#     train.append(em)
-#     train_label.append(1)
-
 
 # type not matching
 count = 0
@@ -111,9 +104,9 @@ while count < 500:
     random_att2 = random.randint(0, att_num)
     if att[random_att1][2] != att[random_att2][2]:
         if att[random_att1][1] and att[random_att2][1]:
-            em = bc.encode([att[random_att1][0], att[random_att1][1] + '|||' + att[random_att2][0], att[random_att2][1]])[1]
+            em = bc.encode([att[random_att1][0] + att[random_att1][1] + '|||' + att[random_att2][0] + att[random_att2][1]])[0]
         else:
-            em = bc.encode([att[random_att1][0] + '|||' + att[random_att2][0]])[1]
+            em = bc.encode([att[random_att1][0] + '|||' + att[random_att2][0]])[0]
         train.append(em)
         train_label.append(0)
         count = count + 1
@@ -124,7 +117,7 @@ print("type is ok")
 for i in range(0, test_att_num):
     for j in range(0, test_att_num):
         result.append(att[i][0] + " and "+att[j][0] + ' matching score is : ')
-        em = bc.encode([att[i][0], att[i][1] + '|||' + att[j][0], att[j][1]])[1]
+        em = bc.encode([att[i][0] + att[i][1] + '|||' + att[j][0] + att[j][1]])[0]
         data.append(em)
 
 print("data is ok")
