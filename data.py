@@ -36,7 +36,7 @@ conn = pymysql.connect(
     host='192.168.123.100',  # 主机名
     port=3306,  # 端口号，MySQL默认为3306
     user='zy',  # 用户名
-    password='yqq000702',  # 密码
+    password='',  # 密码
     database='alidb',  # 数据库名称
 )
 
